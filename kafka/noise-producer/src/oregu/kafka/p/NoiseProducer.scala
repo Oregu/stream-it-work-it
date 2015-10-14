@@ -15,12 +15,19 @@ object NoiseProducer {
         KEY_SERIALIZER_CLASS_CONFIG   -> "org.apache.kafka.common.serialization.StringSerializer",
         VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
 
-    val strProducer = new KafkaProducer[Nothing, String](configs)
+    val producer = new KafkaProducer[Nothing, String](configs)
 
-    val text = List("some", "random", "text", "emulate", "twitter", "gibberish")
+    Runtime.getRuntime.addShutdownHook(new Thread() {
+      override def run() {
+        producer.close()
+      }
+    })
+
+    val text = List("some", "funky", "text", "emulate", "twitter", "shmitter")
     while (true) {
       val rec = new ProducerRecord(topicName, Random.shuffle(text).mkString(" "))
-      strProducer.send(rec)
+      producer.send(rec)
+      Thread.sleep(500)
     }
   }
 }
