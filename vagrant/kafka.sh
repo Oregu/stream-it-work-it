@@ -6,15 +6,15 @@ SPARK_V="spark-1.5.1-bin-hadoop2.6"
 # Run Kafka
 cd ~/opt/"$KAFKA_V"
 
-#   Start Kafka servers
+#   Start Kafka zookeeper
 ./bin/zookeeper-server-start.sh config/zookeeper.properties &
-sleep 3
+sleep 5
+#   Start Kafka servers
 ./bin/kafka-server-start.sh config/server.properties &
-sleep 3
+sleep 5
 
 #   Create Kafka topics
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test &
-sleep 1
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic noisenoise
 
 #   Start Kafka Producer
 #./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test &
