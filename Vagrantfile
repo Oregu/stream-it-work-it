@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "ubuntu/vivid64"
   # config.vm.box_url = "http://vagrantcloud.com/ubuntu/boxes/vivid64"
-  config.vm.hostname = "noisenoise"
+  config.vm.hostname = "kafka"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,

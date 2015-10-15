@@ -11,7 +11,7 @@ object NoiseProducer {
     val topicName = if (args.length == 0) "noisenoise" else args(0)
 
     val configs = Map[String, Object](
-        BOOTSTRAP_SERVERS_CONFIG      -> "127.0.0.1:9092",
+        BOOTSTRAP_SERVERS_CONFIG      -> "kafka:9092",
         KEY_SERIALIZER_CLASS_CONFIG   -> "org.apache.kafka.common.serialization.StringSerializer",
         VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
 

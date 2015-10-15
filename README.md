@@ -3,6 +3,7 @@
 ```
 vagrant up
 ```
+(Need to add ```127.0.0.1 kafka``` to hosts for producer to be able to connect from host machine.)
 
 # Resources
 
