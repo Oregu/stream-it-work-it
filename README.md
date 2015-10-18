@@ -3,13 +3,16 @@
 ```
 vagrant up
 ```
-(Need to add ```127.0.0.1 kafka``` to hosts for producer to be able to connect from host machine.)
+(Need to add ```127.0.0.1 kafka``` to hosts for producer to connect from host machine.)
 
 # Resources
 
 ## Kafka
 - http://kafka.apache.org/documentation.html
 - http://www.michael-noll.com/blog/2014/08/18/apache-kafka-training-deck-and-tutorial/
+
+## Kafka/Spark Streaming integration
+- http://spark.apache.org/docs/latest/streaming-kafka-integration.html
 
 # Tutorials
 - http://www.michael-noll.com/blog/2014/10/01/kafka-spark-streaming-integration-example-tutorial/

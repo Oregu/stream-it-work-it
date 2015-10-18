@@ -1,4 +1,4 @@
-val kafka = "org.apache.kafka" % "kafka-clients" % "0.8.2.0"
+val kafka = "org.apache.kafka" % "kafka-clients" % "0.8.2.1"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
