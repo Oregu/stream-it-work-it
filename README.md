@@ -14,6 +14,10 @@ vagrant up
 ## Kafka/Spark Streaming integration
 - http://spark.apache.org/docs/latest/streaming-kafka-integration.html
 
+## Spark Streaming
+http://spark.apache.org/docs/latest/streaming-programming-guide.html
+https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples/streaming
+
 # Tutorials
 - http://www.michael-noll.com/blog/2014/10/01/kafka-spark-streaming-integration-example-tutorial/
 - http://www.michael-noll.com/blog/2014/05/27/kafka-storm-integration-example-tutorial/
