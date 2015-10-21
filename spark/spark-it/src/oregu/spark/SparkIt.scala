@@ -1,10 +1,10 @@
 package oregu.spark
 
-import kafka.serializer.{DefaultDecoder, StringDecoder}
+import kafka.serializer.StringDecoder
 import org.apache.kafka.clients.producer.ProducerConfig._
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.streaming.kafka._
 import org.apache.spark.SparkConf
+import org.apache.spark.streaming.kafka._
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object SparkIt {
   def main(args: Array[String]): Unit = {
