@@ -25,6 +25,8 @@ object SparkIt {
     val lines = directKafkaStream.map(_._2)
     val words = lines.flatMap(_.split(" "))
     val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
+
+    // Send to Kafka topic now
     wordCounts.print()
 
     // Start the computation

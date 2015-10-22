@@ -1,40 +1,54 @@
 package oregu.tweetatra
 
+import java.util.Properties
+
+import kafka.serializer.DefaultDecoder
+
 import scala.collection.JavaConversions._
 
 import com.twitter.finagle.httpx.Request
 import com.twitter.finatra.http.Controller
 
-import org.apache.kafka.clients.consumer._
+import kafka.consumer._
 
 class Noise extends Controller {
   get("/noise") { request: Request =>
     val props = Map[String, Object](
-      "groupid" -> "group",
-      "auto.commit" -> "true",
-      "zk.connect" -> "localhost:2181")
+      "group.id" -> "default",
+      "zookeeper.connect" -> "localhost:2181",
+      "bootstrap.servers" -> "localhost:9092",
+      "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+      "value.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+      "partition.assignment.strategy" -> "roundrobin")
 
-    val connector = new KafkaConsumer[String, String](props)
+    val propsProps = new Properties
+    propsProps.putAll(props)
+
     val topic = "noise-extract"
+    val connector = Consumer.create(new ConsumerConfig(propsProps))
 
     Runtime.getRuntime.addShutdownHook(new Thread() {
       override def run() {
-        connector.close()
+        connector.shutdown()
       }
     })
 
-    connector.subscribe(topic)
-    val recs = connector.poll(1000)
+    val stream: KafkaStream[Array[Byte], Array[Byte]] =
+      connector.createMessageStreamsByFilter(new Whitelist(topic), 1, new DefaultDecoder(), new DefaultDecoder()).head
 
-    var builder = new StringBuilder
-    for(rec <- recs) {
-      builder ++= rec._1
-      for (rec2 <- rec._2.records(rec)) {
-        builder ++= rec2._1 + rec2._2
-      }
-    }
+    val msgAndMeta = stream.iterator().next()
 
-    connector.close()
+    var builder = new StringBuilder(msgAndMeta.topic)
+    builder ++= "\nkey:"
+    builder ++= Option(msgAndMeta.key()).toString
+    builder ++= "\nmsg:"
+    builder ++= new String(msgAndMeta.message(), "UTF-8")
+    builder ++= "\npartition:"
+    builder ++= Option(msgAndMeta.partition).toString
+    builder ++= "\noffset:"
+    builder ++= Option(msgAndMeta.offset).toString
+
+    connector.shutdown()
     builder.toString()
   }
 }

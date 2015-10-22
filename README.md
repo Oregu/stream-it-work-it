@@ -10,6 +10,7 @@ vagrant up
 ## Kafka
 - http://kafka.apache.org/documentation.html
 - http://www.michael-noll.com/blog/2014/08/18/apache-kafka-training-deck-and-tutorial/
+- https://gist.github.com/ashrithr/5811266
 
 ## Kafka/Spark Streaming integration
 - http://spark.apache.org/docs/latest/streaming-kafka-integration.html

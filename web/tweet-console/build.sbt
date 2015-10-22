@@ -10,6 +10,6 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "com.twitter.finatra" % "finatra-http_2.11" % "2.1.0",
   "com.twitter.finatra" % "finatra-slf4j_2.11" % "2.1.0",
-  "org.apache.kafka" % "kafka-clients" % "0.8.2.1",
+  ("org.apache.kafka" % "kafka_2.11" % "0.8.2.2").exclude("org.slf4j", "slf4j-log4j12"),
   "ch.qos.logback" % "logback-classic" % "1.1.3"
 )
