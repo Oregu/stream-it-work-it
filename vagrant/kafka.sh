@@ -14,8 +14,14 @@ sleep 5
 sleep 5
 
 #   Create Kafka topics
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic noisenoise
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic noise-extract
+
+## Noise topic
+#./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic noisenoise
+#./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic noise-extract
+
+## Camus topic
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus-stat
 
 #   Start Kafka Producer
 #./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test &

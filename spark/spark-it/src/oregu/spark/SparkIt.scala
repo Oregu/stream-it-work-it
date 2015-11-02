@@ -14,8 +14,10 @@ object SparkIt {
 
   def main(args: Array[String]): Unit = {
 
-    val (ssc, directKafkaStream) = fromKafka
-    val wordCounts = spark(directKafkaStream)
+    val sparkConf = new SparkConf().setAppName("SparkItKafkaWordCount")
+    val ssc = new StreamingContext(sparkConf, Seconds(2))
+
+    val wordCounts = spark(fromKafka(ssc))
     toKafka(wordCounts)
 
     // Start the computation
@@ -29,20 +31,16 @@ object SparkIt {
     words.map(x => (x, 1L)).reduceByKey(_ + _)
   }
 
-  def fromKafka: (StreamingContext, InputDStream[(String, String)]) = {
+  def fromKafka(ssc: StreamingContext): (InputDStream[(String, String)]) = {
     val kafkaConfigs = Map[String, String](
       BOOTSTRAP_SERVERS_CONFIG      -> "kafka:9092",
       KEY_SERIALIZER_CLASS_CONFIG   -> "org.apache.kafka.common.serialization.StringSerializer",
       VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
+    val kafkaTopics = Set("camus")
 
-    val kafkaTopics = Set("noisenoise")
-
-    val sparkConf = new SparkConf().setAppName("SparkItKafkaWordCount")
-    val ssc = new StreamingContext(sparkConf, Seconds(2))
-    val directKafkaStream = KafkaUtils.createDirectStream[
+    KafkaUtils.createDirectStream[
         String, String, StringDecoder, StringDecoder](
         ssc, kafkaConfigs, kafkaTopics)
-    (ssc, directKafkaStream)
   }
 
   def toKafka(wordCounts: DStream[(String, Long)]) = {
@@ -51,8 +49,7 @@ object SparkIt {
     configs.put(KEY_SERIALIZER_CLASS_CONFIG,   "org.apache.kafka.common.serialization.StringSerializer")
     configs.put(VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
 
-
-    val topic = "noise-extract"
+    val topic = "camus-stat"
     wordCounts.foreachRDD { rdd =>
       rdd.foreach { count =>
         val producer = new KafkaProducer[Nothing, String](configs)
