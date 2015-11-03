@@ -18,6 +18,6 @@ class NoiseServer extends HttpServer {
       .filter[TraceIdMDCFilter[Request, Response]]
       .filter[CommonFilters]
       .add[Root]
-      .add[Noise]
+      .add[Camus]
   }
 }
