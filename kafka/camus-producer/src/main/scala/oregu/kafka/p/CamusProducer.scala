@@ -17,8 +17,6 @@ object CamusProducer {
       KEY_SERIALIZER_CLASS_CONFIG   -> "org.apache.kafka.common.serialization.StringSerializer",
       VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
 
-    val kafkaTopic = "camus"
-
     val producer = new KafkaProducer[Nothing, String](configs)
 
     Runtime.getRuntime.addShutdownHook(new Thread() {
@@ -33,6 +31,7 @@ object CamusProducer {
     val source = fromInputStream(getClass.getResourceAsStream("/camus.txt"))
     val lines = try source.mkString(" ") finally source.close()
 
+    val kafkaTopic = "camus"
     for (word <- lines.split("\\s")) {
       producer.send(new ProducerRecord(kafkaTopic, word))
     }
