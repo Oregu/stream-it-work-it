@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 import scala.collection.JavaConversions._
 import scala.io.Codec
-import scala.io.Source._
+import scala.io.Source
 
 object CamusProducer {
   def main(args: Array[String]): Unit = {
@@ -28,12 +28,14 @@ object CamusProducer {
     implicit val codec = Codec.UTF8
     codec.onMalformedInput(CodingErrorAction.IGNORE)
 
-    val source = fromInputStream(getClass.getResourceAsStream("/camus.txt"))
-    val lines = try source.mkString(" ") finally source.close()
+    val source = Source.fromInputStream(getClass.getResourceAsStream("/camus.txt"))
+    val lines = try source.mkString finally source.close()
 
-    val kafkaTopic = "camus"
-    for (word <- lines.split("\\s")) {
+    val kafkaTopic = "camus-speaks-words"
+    for (word <- lines.split("\\s+")) {
       producer.send(new ProducerRecord(kafkaTopic, word))
     }
+
+    producer.close()
   }
 }

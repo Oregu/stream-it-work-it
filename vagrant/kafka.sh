@@ -16,8 +16,8 @@ sleep 5
 #   Create Kafka topics
 
 ## Camus topic
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus
-./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus-stat
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus-speaks-words
+./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic camus-spoke
 
 #   Start Kafka Producer
 #./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test &

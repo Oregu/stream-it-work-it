@@ -13,7 +13,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 object SparkIt {
 
   def main(args: Array[String]): Unit = {
-
     val sparkConf = new SparkConf().setAppName("SparkItKafkaWordCount")
     val ssc = new StreamingContext(sparkConf, Seconds(2))
 
@@ -34,8 +33,8 @@ object SparkIt {
       BOOTSTRAP_SERVERS_CONFIG      -> "kafka:9092",
       KEY_SERIALIZER_CLASS_CONFIG   -> "org.apache.kafka.common.serialization.StringSerializer",
       VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
-    val kafkaTopics = Set("camus")
 
+    val kafkaTopics = Set("camus-speaks-words")
     KafkaUtils.createDirectStream[
         String, String, StringDecoder, StringDecoder](
         ssc, kafkaConfigs, kafkaTopics)
@@ -44,14 +43,20 @@ object SparkIt {
   def output(wordCounts: DStream[(Int, Long)]) = {
     val configs = new Properties
     configs.put(BOOTSTRAP_SERVERS_CONFIG,      "kafka:9092")
-    configs.put(KEY_SERIALIZER_CLASS_CONFIG,   "org.apache.kafka.common.serialization.StringSerializer")
-    configs.put(VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
+    configs.put(KEY_SERIALIZER_CLASS_CONFIG,   "org.apache.kafka.common.serialization.ByteArraySerializer")
+    configs.put(VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer")
 
-    val topic = "camus-stat"
+    val topic = "camus-spoke"
     wordCounts.foreachRDD { rdd =>
       rdd.foreach { count =>
-        val producer = new KafkaProducer[Int, Long](configs)
-        val rec = new ProducerRecord(topic, count._1, count._2)
+        val producer = new KafkaProducer[Array[Byte], Array[Byte]](configs)
+
+        val bk = java.nio.ByteBuffer.allocate(4)
+        bk.putInt(count._1)
+        val bv = java.nio.ByteBuffer.allocate(8)
+        bv.putLong(count._2)
+
+        val rec = new ProducerRecord(topic, bk.array(), bv.array())
         producer.send(rec)
         producer.close()
       }
