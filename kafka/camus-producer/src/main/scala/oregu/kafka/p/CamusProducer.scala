@@ -1,13 +1,14 @@
 package oregu.kafka.p
 
+import scala.collection.JavaConversions._
+import scala.io.Codec
+import scala.io.Source
+
 import java.nio.charset.CodingErrorAction
 
 import org.apache.kafka.clients.producer.ProducerConfig._
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
-import scala.collection.JavaConversions._
-import scala.io.Codec
-import scala.io.Source
 
 object CamusProducer {
   def main(args: Array[String]): Unit = {
@@ -34,6 +35,7 @@ object CamusProducer {
     val kafkaTopic = "camus-speaks-words"
     for (word <- lines.split("\\s+")) {
       producer.send(new ProducerRecord(kafkaTopic, word))
+      Thread.sleep(1)
     }
 
     producer.close()

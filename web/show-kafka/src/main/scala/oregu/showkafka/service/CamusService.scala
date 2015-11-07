@@ -1,23 +1,18 @@
-package oregu.tweetatra
+package oregu.showkafka.service
 
 import java.util.Properties
 
-import com.twitter.finagle.httpx.Request
-import com.twitter.finatra.http.Controller
 import kafka.consumer._
 
 import scala.collection.JavaConversions._
-import scala.collection.concurrent.TrieMap
-import scala.collection.immutable.ListMap
+import scala.collection.concurrent.Map
 import scala.util.control.Exception._
 
+import com.twitter.inject.Logging
 
-object Stats {
-  val stats = new TrieMap[Int, Long]
-}
 
-class Camus extends Controller {
-  get("/camus") { request: Request =>
+class CamusService extends Logging {
+  def service(state: Map[Int, Long]) {
     val props = Map[String, Object](
       "group.id" -> "default",
       "zookeeper.connect" -> "kafka:2181",
@@ -44,8 +39,8 @@ class Camus extends Controller {
         val v = (Option(msg.message()) map (java.nio.ByteBuffer.wrap(_).getLong)) getOrElse 0L
 
         // TODO: Non-atomic
-        if (Stats.stats.putIfAbsent(k, v).isDefined) {
-          Stats.stats.put(k, Stats.stats(k) + v)
+        if (state.putIfAbsent(k, v).isDefined) {
+          state.put(k, state(k) + v)
         }
       }
     }
@@ -56,14 +51,5 @@ class Camus extends Controller {
     finally {
       connector.shutdown()
     }
-
-    var builder = new StringBuilder()
-
-    for (data <- Stats.stats.toSeq.sortBy(_._1)) {
-      builder.append("length: ").append(data._1)
-      builder.append("\tcount: ").append(data._2).append("\n")
-    }
-
-    if (builder.isEmpty) "None written" else builder.toString()
   }
 }
